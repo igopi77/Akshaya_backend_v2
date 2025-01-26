@@ -1,4 +1,7 @@
 package com.uruttu.akshaya_server.repository;
 
-public class CustomerRepository {
+import com.uruttu.akshaya_server.model.CustomerModel;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+public interface CustomerRepository extends MongoRepository<CustomerModel,String> {
 }

@@ -13,7 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -30,10 +33,41 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public ResponseEntity<ProductModel> addProduct(ProductModel productModel) {
+    public List<ProductModel> addProduct(List<ProductModel> productModel) {
         logger.info("productModel : " + productModel);
-        ProductModel savedOne = productRepository.save(productModel);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedOne);
+        return productRepository.saveAll(productModel);
+    }
+
+    @Override
+    public ResponseEntity<Map<String, Object>> getProduct() {
+        Map<String, Object> response = new HashMap<>();
+        try  {
+            List<ProductModel> productList = productRepository.findAll();
+            response.put("products", productList);
+            return ResponseEntity.ok().body(response);
+        } catch (Exception e) {
+            response.put("error",e);
+            return ResponseEntity.status(500).body(response);
+        }
+    }
+
+    @Override
+    public ResponseEntity<Map<String, Object>> getProductIds() {
+        Map<String,Object> response = new HashMap<>();
+
+        try {
+            List<ProductModel> productModels = productRepository.findAll();
+            if (productModels.isEmpty()) {
+                response.put("message", "No product Id's found");
+                return ResponseEntity.status(300).body(response);
+            }
+            List<String> productId = productModels.stream().map(ProductModel::getId).toList();
+            response.put("productId", productId);
+            return ResponseEntity.ok().body(response);
+        } catch (Exception e) {
+            response.put("error",e);
+            return ResponseEntity.status(300).body(response);
+        }
     }
 
 }

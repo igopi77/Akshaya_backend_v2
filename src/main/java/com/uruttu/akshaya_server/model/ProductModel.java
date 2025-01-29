@@ -1,12 +1,8 @@
 package com.uruttu.akshaya_server.model;
 
-import lombok.Data;
-import lombok.Getter;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
-@Data
 @Document(collection = "products")
 public class ProductModel {
     @MongoId
@@ -20,6 +16,8 @@ public class ProductModel {
     private String createAt;
     private String updatedAt;
 
+    private ProductModel() {
+    }
 
     public void setId(String id) {
         this.id = id;
@@ -55,5 +53,41 @@ public class ProductModel {
 
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public String getProductName() {
+        return this.productName;
+    }
+
+    public int getQuantity() {
+        return this.quantity;
+    }
+
+    public String getUnit() {
+        return this.unit;
+    }
+
+    public int getCostPrice() {
+        return this.costPrice;
+    }
+
+    public int getSellingPrice() {
+        return this.sellingPrice;
+    }
+
+    public double getDiscount() {
+        return this.discount;
+    }
+
+    public String getCreateAt() {
+        return this.createAt;
+    }
+
+    public String getUpdatedAt() {
+        return this.updatedAt;
     }
 }

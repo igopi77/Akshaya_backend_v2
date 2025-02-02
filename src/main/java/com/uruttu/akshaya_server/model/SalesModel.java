@@ -8,23 +8,28 @@ public class SalesModel {
     @Id
     private String id;
 
-    private String productId;
-    private String productName;
-    private int quantity;
-    private double unitPrice;
-    private double totalAmount;
-    private double discount;
+    private String productId; //ok
+    private String productName; //ok
+    private int quantity; // ok
+    private double unitPrice; //ok
+    private double totalAmount; //pok
+    private double discount; //ok
+    private double profit;
     private String customerId;
     private String customerName;
 
-    private String saleDate;
-    private String paymentMode;
-    private String invoiceNumber;
+    private String saleDate; //ok
+    private String paymentMode; //ok
+    private String invoiceNumber; //ok
 
-    private String createdAt;
-    private String updatedAt;
+    private String createdAt; //ok
+    private String updatedAt; //ok
 
     public SalesModel() {
+    }
+
+    public double getProfit() {
+        return profit;
     }
 
     public String getId() {
@@ -81,6 +86,10 @@ public class SalesModel {
 
     public String getUpdatedAt() {
         return this.updatedAt;
+    }
+
+    public void setProfit(double profit) {
+        this.profit = profit;
     }
 
     public void setId(String id) {

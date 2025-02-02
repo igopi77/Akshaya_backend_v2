@@ -4,6 +4,7 @@ import com.uruttu.akshaya_server.model.ProductModel;
 import com.uruttu.akshaya_server.model.SalesModel;
 import com.uruttu.akshaya_server.repository.ProductRepository;
 import com.uruttu.akshaya_server.repository.SalesRepository;
+import com.uruttu.akshaya_server.response.DashboardResponse;
 import com.uruttu.akshaya_server.service.SalesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,9 +35,11 @@ public class SalesServiceImpl implements SalesService {
 
         for (SalesModel salesModel : salesModelList) {
             try {
-                boolean isDecremented = findAndDecrementProduct(salesModel.getProductId(), salesModel.getQuantity());
+                boolean isDecremented = findAndDecrementProduct(salesModel);
 
-                if (isDecremented) {
+                boolean isSalesProcessed = processSale(salesModel);
+
+                if (isDecremented && isSalesProcessed) {
                     salesRepository.save(salesModel);
                     successfulSales.add(salesModel);
                 } else {
@@ -55,8 +58,54 @@ public class SalesServiceImpl implements SalesService {
         return ResponseEntity.ok().body(Map.of("message", "All sales processed successfully", "sales", successfulSales));
     }
 
-    public boolean findAndDecrementProduct(String productId, int quantity) {
-        Optional<ProductModel> optionalProduct = productRepository.findById(productId);
+    @Override
+    public ResponseEntity<DashboardResponse> getDashboardResponse() {
+        List<SalesModel> salesList = salesRepository.findAll();
+        List<ProductModel> productList = productRepository.findAll();
+
+        double totalSales = 0;
+        double totalRevenue = 0;
+        double totalCost = 0;
+        double totalProfit = 0;
+        int totalPurchases = productList.size();
+        double totalPurchaseCost = 0;
+
+        for (SalesModel sale : salesList) {
+            totalSales += sale.getQuantity();
+            totalRevenue += sale.getTotalAmount();
+            totalCost += (sale.getTotalAmount() - sale.getProfit());
+            totalProfit += sale.getProfit();
+        }
+
+        for (ProductModel product : productList) {
+            totalPurchaseCost += (product.getCostPrice() * product.getQuantity());
+        }
+
+        return ResponseEntity.ok().body(new DashboardResponse(totalSales, totalRevenue, totalCost, totalProfit, totalPurchases, totalPurchaseCost,true));
+    }
+
+    public boolean processSale(SalesModel sale) {
+        // Fetch the product's cost price from the database
+        Optional<ProductModel> productOpt = productRepository.findById(sale.getProductId());
+
+        if (productOpt.isPresent()) {
+            ProductModel product = productOpt.get();
+            double costPricePerUnit = product.getCostPrice();
+
+            // Calculate Profit = (Selling Price - Cost Price) * Quantity
+            double profit = (sale.getUnitPrice() - costPricePerUnit) * sale.getQuantity();
+            sale.setProfit(profit);
+
+            salesRepository.save(sale);
+            return true;
+        } else {
+            System.out.println("Product not found for sale:"  + sale.getProductId());
+            return false;
+        }
+    }
+
+    public boolean findAndDecrementProduct(SalesModel salesModel) {
+        Optional<ProductModel> optionalProduct = productRepository.findById(salesModel.getProductId());
 
         if (optionalProduct.isEmpty()) {
             throw new RuntimeException("Product not found");
@@ -64,11 +113,11 @@ public class SalesServiceImpl implements SalesService {
 
         ProductModel productModel = optionalProduct.get();
 
-        if (productModel.getQuantity() < quantity) {
+        if (productModel.getQuantity() < salesModel.getQuantity()) {
             return false; // Not enough stock
         }
 
-        productModel.setQuantity(productModel.getQuantity() - quantity);
+        productModel.setQuantity(productModel.getQuantity() - salesModel.getQuantity());
         productRepository.save(productModel);
         return true; // Successfully decremented
     }

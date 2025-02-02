@@ -6,6 +6,7 @@ import com.uruttu.akshaya_server.dto.SalesDTO;
 import com.uruttu.akshaya_server.helper.Urls;
 import com.uruttu.akshaya_server.model.ProductModel;
 import com.uruttu.akshaya_server.model.SalesModel;
+import com.uruttu.akshaya_server.response.DashboardResponse;
 import com.uruttu.akshaya_server.service.ProductService;
 import com.uruttu.akshaya_server.service.SalesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,11 @@ public class ProductController {
     @GetMapping(value = Urls.GET_ALL_PRODUCT_ID)
     ResponseEntity<Map<String,Object>> getAllProductId() {
         return productService.getProductIds();
+    }
+
+    @GetMapping(value = Urls.DASHBOARD)
+    ResponseEntity<DashboardResponse> getDashboard() {
+       return salesService.getDashboardResponse();
     }
 
 }

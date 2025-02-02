@@ -1,18 +1,22 @@
 package com.uruttu.akshaya_server.model;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 @Document(collection = "products")
 public class ProductModel {
-    @MongoId
+    @Id
     private String id;
     private String productName;
     private int quantity;
-    private String unit;
-    private int costPrice;
+    private String pricePerUnitForPurchase;
+    private String pricePerUnitForSales;
+    private double costPrice;
     private int sellingPrice;
     private double discount;
+    private String dateOfSale;
+    private String dateOfExpiry;
     private String createAt;
     private String updatedAt;
 
@@ -31,11 +35,15 @@ public class ProductModel {
         this.quantity = quantity;
     }
 
-    public void setUnit(String unit) {
-        this.unit = unit;
+    public void setPricePerUnitForPurchase(String pricePerUnitForPurchase) {
+        this.pricePerUnitForPurchase = pricePerUnitForPurchase;
     }
 
-    public void setCostPrice(int costPrice) {
+    public void setPricePerUnitForSales(String pricePerUnitForSales) {
+        this.pricePerUnitForSales = pricePerUnitForSales;
+    }
+
+    public void setCostPrice(double costPrice) {
         this.costPrice = costPrice;
     }
 
@@ -55,6 +63,22 @@ public class ProductModel {
         this.updatedAt = updatedAt;
     }
 
+    public void setDateOfExpiry(String dateOfExpiry) {
+        this.dateOfExpiry = dateOfExpiry;
+    }
+
+    public void setDateOfSale(String dateOfSale) {
+        this.dateOfSale = dateOfSale;
+    }
+
+    public String getDateOfExpiry() {
+        return dateOfExpiry;
+    }
+
+    public String getDateOfSale() {
+        return dateOfSale;
+    }
+
     public String getId() {
         return this.id;
     }
@@ -67,11 +91,15 @@ public class ProductModel {
         return this.quantity;
     }
 
-    public String getUnit() {
-        return this.unit;
+    public String getPricePerUnitForPurchase() {
+        return pricePerUnitForPurchase;
     }
 
-    public int getCostPrice() {
+    public String getPricePerUnitForSales() {
+        return pricePerUnitForSales;
+    }
+
+    public double getCostPrice() {
         return this.costPrice;
     }
 

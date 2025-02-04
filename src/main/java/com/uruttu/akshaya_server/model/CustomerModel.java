@@ -3,6 +3,7 @@ package com.uruttu.akshaya_server.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.List;
@@ -11,10 +12,10 @@ import java.util.List;
 public class CustomerModel {
 
     @Id
+    private String email;
     private String id;
 
     private String customerName;
-    private String email;
     private String phone;
     private String createAt;
     private String updatedAt;

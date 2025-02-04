@@ -42,7 +42,10 @@ public class ProductServiceImpl implements ProductService {
     public ResponseEntity<Map<String, Object>> getProduct() {
         Map<String, Object> response = new HashMap<>();
         try  {
-            List<ProductModel> productList = productRepository.findAll();
+            List<ProductModel> productList = productRepository.findAll()
+                    .stream()
+                    .filter(product -> product.getQuantity() > 0)
+                    .collect(Collectors.toList());;
             response.put("products", productList);
             return ResponseEntity.ok().body(response);
         } catch (Exception e) {

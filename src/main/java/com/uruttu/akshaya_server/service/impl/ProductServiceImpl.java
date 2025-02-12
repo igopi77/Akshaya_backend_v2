@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -70,6 +71,22 @@ public class ProductServiceImpl implements ProductService {
         } catch (Exception e) {
             response.put("error",e);
             return ResponseEntity.status(300).body(response);
+        }
+    }
+
+    @Override
+    public ResponseEntity<Map<String, Object>> updateProductById(ProductModel productModel) {
+        try {
+            Optional<ProductModel> repProductModel = productRepository.findById(productModel.getId());
+            if (repProductModel.isPresent()) {
+                productRepository.save(productModel);
+                return ResponseEntity.ok().body(Map.of("message" , "updated successfully", "status", true));
+            }
+            return ResponseEntity.status(404).body(Map.of("message" , "update failed", "status", false));
+        }
+        catch (Exception e) {
+            System.out.println("Error on updating product : " + e);
+            return ResponseEntity.status(400).body(Map.of("message" , e, "status", false));
         }
     }
 

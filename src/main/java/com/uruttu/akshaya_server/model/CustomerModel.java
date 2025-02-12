@@ -13,7 +13,6 @@ public class CustomerModel {
 
     @Id
     private String email;
-    private String id;
 
     private String customerName;
     private String phone;
@@ -23,9 +22,6 @@ public class CustomerModel {
     public CustomerModel() {
     }
 
-    public String getId() {
-        return this.id;
-    }
 
     public String getCustomerName() {
         return this.customerName;
@@ -46,10 +42,6 @@ public class CustomerModel {
 
     public String getUpdatedAt() {
         return this.updatedAt;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public void setCustomerName(String customerName) {

@@ -22,16 +22,17 @@ public class CustomerServiceImpl implements CustomerService {
     public ResponseEntity<Map<String, Object>> addCustomer(CustomerModel customerModel) {
         try {
             Optional<CustomerModel> customerModel1 = Optional.ofNullable(customerRepository.findByEmail(customerModel.getEmail()));
+            System.out.println(customerModel1);
             if (customerModel1.isEmpty()) {
                 CustomerModel customerModel12;
                 customerModel12 = customerRepository.save(customerModel);
-                return ResponseEntity.ok().body(Map.of("message", "customer added successfully", "id", customerModel12.getId(), "status", true));
+                return ResponseEntity.ok().body(Map.of("message", "customer added successfully", "id", customerModel12.getEmail(), "status", true));
             }
-            return ResponseEntity.ok().body(Map.of("message", "already existed", "id", customerModel1.get().getId(), "status", true));
+            return ResponseEntity.ok().body(Map.of("message", "already existed", "id", customerModel1.get().getEmail(), "status", true));
 
         }
         catch (Exception e) {
-            return ResponseEntity.status(500).body(Map.of("message" , "unable to add","status",false));
+            return ResponseEntity.status(500).body(Map.of("message" , "unable to add : " + e ,"status",false));
         }
     }
 

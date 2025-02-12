@@ -60,4 +60,9 @@ public class ProductController {
        return salesService.getDashboardResponse();
     }
 
+    @PostMapping(value = Urls.UPDATE_PRODUCT)
+    ResponseEntity<Map<String,Object>> updateProductById( @RequestBody ProductDTO productDTO) {
+        return productService.updateProductById(productDTO.getProductModel());
+    }
+
 }

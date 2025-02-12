@@ -12,4 +12,5 @@ public interface ProductService {
     List<ProductModel> addProduct(List<ProductModel> productModel);
     ResponseEntity<Map<String,Object>> getProduct();
     ResponseEntity<Map<String,Object>> getProductIds();
+    ResponseEntity<Map<String,Object>> updateProductById(ProductModel productModel);
 }

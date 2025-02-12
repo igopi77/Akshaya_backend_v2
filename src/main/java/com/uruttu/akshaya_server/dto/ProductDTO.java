@@ -10,6 +10,9 @@ public class ProductDTO {
     @JsonProperty("products")
     private List<ProductModel> products;
 
+    @JsonProperty("updated_product")
+    private ProductModel productModel;
+
     private ProductDTO() {}
 
     public List<ProductModel> getProductDTO() {
@@ -18,5 +21,14 @@ public class ProductDTO {
 
     public void setProductDTO(List<ProductModel> productDTO) {
         this.products = productDTO;
+    }
+
+
+    public void setProductModel(ProductModel productModel) {
+        this.productModel = productModel;
+    }
+
+    public ProductModel getProductModel() {
+        return productModel;
     }
 }

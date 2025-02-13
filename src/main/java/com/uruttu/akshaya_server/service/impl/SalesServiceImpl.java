@@ -32,30 +32,37 @@ public class SalesServiceImpl implements SalesService {
     public ResponseEntity<Map<String, Object>> addSalesForProduct(List<SalesModel> salesModelList) {
         List<SalesModel> successfulSales = new ArrayList<>();
         List<Map<String, String>> failedSales = new ArrayList<>();
+        List<String> salesIds = new ArrayList<>();
 
-        for (SalesModel salesModel : salesModelList) {
-            try {
-                boolean isDecremented = findAndDecrementProduct(salesModel);
+        try {
+            for (SalesModel salesModel : salesModelList) {
+                try {
+                    boolean isDecremented = findAndDecrementProduct(salesModel);
 
-                boolean isSalesProcessed = processSale(salesModel);
+                    boolean isSalesProcessed = processSale(salesModel);
 
-                if (isDecremented && isSalesProcessed) {
-                    salesRepository.save(salesModel);
-                    successfulSales.add(salesModel);
-                } else {
-                    failedSales.add(Map.of("productId", salesModel.getProductId(), "error", "Not enough stock"));
+                    if (isDecremented && isSalesProcessed) {
+                        salesRepository.save(salesModel);
+                        successfulSales.add(salesModel);
+                        salesIds.add(salesModel.getProductId());
+                    } else {
+                        failedSales.add(Map.of("productId", salesModel.getProductId(), "error", "Not enough stock"));
+                    }
+                } catch (Exception e) {
+                    failedSales.add(Map.of("productId", salesModel.getProductId(), "error", e.getMessage()));
                 }
-            } catch (Exception e) {
-                failedSales.add(Map.of("productId", salesModel.getProductId(), "error", e.getMessage()));
             }
-        }
 
-        if (!failedSales.isEmpty()) {
+            if (!failedSales.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("message", "Some sales failed", "failedSales", failedSales, "successfulSales", successfulSales, "generatePdfIds", salesIds, "status", true));
+            }
+
+            return ResponseEntity.ok().body(Map.of("message", "All sales processed successfully", "sales", successfulSales, "generatePdfIds", salesIds, "status", true));
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("message", "Some sales failed", "failedSales", failedSales, "successfulSales", successfulSales));
+                    .body(Map.of("message", "e", "status", false));
         }
-
-        return ResponseEntity.ok().body(Map.of("message", "All sales processed successfully", "sales", successfulSales));
     }
 
     @Override

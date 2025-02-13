@@ -42,9 +42,9 @@ public class SalesServiceImpl implements SalesService {
                     boolean isSalesProcessed = processSale(salesModel);
 
                     if (isDecremented && isSalesProcessed) {
-                        salesRepository.save(salesModel);
-                        successfulSales.add(salesModel);
-                        salesIds.add(salesModel.getProductId());
+                        SalesModel savedSales = salesRepository.save(salesModel);
+                        successfulSales.add(savedSales);
+                        salesIds.add(savedSales.getId());
                     } else {
                         failedSales.add(Map.of("productId", salesModel.getProductId(), "error", "Not enough stock"));
                     }
